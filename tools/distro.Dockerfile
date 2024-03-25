@@ -92,7 +92,7 @@ RUN sed --in-place \
 
 # test overlay build
 ARG RUN_TESTS
-ARG FAIL_ON_TEST_FAILURE
+ARG FAIL_ON_TEST_FAILURE=True
 RUN if [ -n "$RUN_TESTS" ]; then \
         . install/setup.sh && \
         colcon test && \
