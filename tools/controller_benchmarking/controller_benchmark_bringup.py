@@ -21,21 +21,23 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
-    benchmark_dir = os.getcwd()
-    #metrics_py = os.path.join(benchmark_dir, 'metrics.py')
-    config = os.path.join(get_package_share_directory('nav2_bringup'), 'params', 'nav2_params.yaml')
+    benchmark_dir = os.path.dirname(os.path.realpath(__file__))
+    # metrics_py = os.path.join(benchmark_dir, 'metrics.py')
+    config = os.path.join(get_package_share_directory(
+        'nav2_bringup'), 'params', 'nav2_params.yaml')
     benchmark_config = os.path.join(benchmark_dir, 'controller_benchmark.yaml')
-    map_file = os.path.join(benchmark_dir,'maps/10by10_empty.yaml')
+    map_file = os.path.join(benchmark_dir, 'maps/25by25_20.yaml')
     lifecycle_nodes = ['map_server', 'planner_server', 'controller_server']
 
     static_transform_one = Node(
-         package = 'tf2_ros',
-         executable = 'static_transform_publisher',
-         output = 'screen',
-         parameters=[{'use_sim_time': True}],
-         arguments = ["0", "0", "0", "0", "0", "0", "odom", "map"])
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        output='screen',
+        parameters=[{'use_sim_time': True}],
+        arguments=["0", "0", "0", "0", "0", "0", "odom", "map"])
 
     start_map_server_cmd = Node(
         package='nav2_map_server',
@@ -59,7 +61,7 @@ def generate_launch_description():
         executable='controller_server',
         name='controller_server',
         output='screen',
-        parameters=[config,benchmark_config,
+        parameters=[config, benchmark_config,
                     {'use_sim_time': True}], )
 
     start_lifecycle_manager_cmd = Node(
@@ -75,20 +77,20 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, 'launch', 'rviz_launch.py')),
         launch_arguments={'namespace': '',
-                          'ues_sim_time' : 'True',
+                          'ues_sim_time': 'True',
                           'use_namespace': 'False'}.items())
 
     tb3_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(benchmark_dir, 'tb3_simulation_only.launch.py')),
         launch_arguments={'namespace': '',
-                          'use_sim_time' : 'True',
-                          'use_rviz' : 'False',
-                          'headless' : 'False', #Will be true
-                          'world' : '',
+                          'use_sim_time': 'True',
+                          'use_rviz': 'False',
+                          'headless': 'False',  # Will be true
+                          'world': '',
                           }.items())
-                          
-    #metrics_cmd = ExecuteProcess(
+
+    # metrics_cmd = ExecuteProcess(
     #    cmd=['python3', '-u', metrics_py],
     #    cwd=[benchmark_dir], output='screen')
 
@@ -100,5 +102,5 @@ def generate_launch_description():
     ld.add_action(start_lifecycle_manager_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(tb3_cmd)
-    #ld.add_action(metrics_cmd)
+    # ld.add_action(metrics_cmd)
     return ld

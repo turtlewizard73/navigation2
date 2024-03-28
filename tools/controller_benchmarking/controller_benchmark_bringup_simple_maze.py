@@ -21,21 +21,23 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 
+
 def generate_launch_description():
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
     benchmark_dir = os.getcwd()
-    #metrics_py = os.path.join(benchmark_dir, 'metrics.py')
-    config = os.path.join(get_package_share_directory('nav2_bringup'), 'params', 'nav2_params.yaml')
+    # metrics_py = os.path.join(benchmark_dir, 'metrics.py')
+    config = os.path.join(get_package_share_directory(
+        'nav2_bringup'), 'params', 'nav2_params.yaml')
     benchmark_config = os.path.join(benchmark_dir, 'controller_benchmark.yaml')
-    map_file = os.path.join(benchmark_dir,'maps/10by10_empty.yaml')
+    map_file = os.path.join(benchmark_dir, 'maps/10by10_empty.yaml')
     lifecycle_nodes = ['map_server', 'planner_server', 'controller_server']
 
     static_transform_one = Node(
-         package = 'tf2_ros',
-         executable = 'static_transform_publisher',
-         output = 'screen',
-         parameters=[{'use_sim_time': True}],
-         arguments = ["0", "0", "0", "0", "0", "0", "odom", "map"])
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        output='screen',
+        parameters=[{'use_sim_time': True}],
+        arguments=["0", "0", "0", "0", "0", "0", "odom", "map"])
 
     start_map_server_cmd = Node(
         package='nav2_map_server',
@@ -59,7 +61,7 @@ def generate_launch_description():
         executable='controller_server',
         name='controller_server',
         output='screen',
-        parameters=[config,benchmark_config,
+        parameters=[config, benchmark_config,
                     {'use_sim_time': True}], )
 
     start_lifecycle_manager_cmd = Node(
@@ -75,16 +77,16 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(nav2_bringup_dir, 'launch', 'rviz_launch.py')),
         launch_arguments={'namespace': '',
-                          'ues_sim_time' : 'True',
+                          'ues_sim_time': 'True',
                           'use_namespace': 'False'}.items())
 
-    world_dir = os.path.join(benchmark_dir,'worlds')
-    world_path = os.path.join(world_dir,'maze_5x5.world')
-    
+    world_dir = os.path.join(benchmark_dir, 'worlds')
+    world_path = os.path.join(world_dir, 'maze_5x5.world')
 
-    gazebo_models_path = os.path.join(benchmark_dir,'models')
+    gazebo_models_path = os.path.join(benchmark_dir, 'models')
     try:
-        os.environ["GAZEBO_MODEL_PATH"] = os.environ["GAZEBO_MODEL_PATH"] + ":" + gazebo_models_path
+        os.environ["GAZEBO_MODEL_PATH"] = os.environ["GAZEBO_MODEL_PATH"] + \
+            ":" + gazebo_models_path
     except:
         os.environ["GAZEBO_MODEL_PATH"] = gazebo_models_path
 
@@ -92,17 +94,17 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(benchmark_dir, 'tb3_simulation_only.launch.py')),
         launch_arguments={'namespace': '',
-                          'use_sim_time' : 'True',
-                          'use_rviz' : 'False',
-                          'headless' : 'False', #Will be true
-                          'world' : world_path
+                          'use_sim_time': 'True',
+                          'use_rviz': 'False',
+                          'headless': 'False',  # Will be true
+                          'world': world_path
                           }.items())
-                          
+
     metrics_cmd = ExecuteProcess(
-       cmd=['python3', 'metrics.py',
+        cmd=['python3', 'metrics.py',
              '--ros-args', '-p', 'use_sim_time:=true',
-             '-p' ,'map_name:=maze_5x5'],
-       cwd=[benchmark_dir], output='screen')
+             '-p', 'map_name:=maze_5x5'],
+        cwd=[benchmark_dir], output='screen')
 
     ld = LaunchDescription()
     ld.add_action(static_transform_one)
