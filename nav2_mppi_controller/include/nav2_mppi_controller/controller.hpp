@@ -23,6 +23,7 @@
 #include "nav2_mppi_controller/tools/trajectory_visualizer.hpp"
 #include "nav2_mppi_controller/models/constraints.hpp"
 #include "nav2_mppi_controller/tools/utils.hpp"
+#include "nav2_mppi_controller/msg/critic_score.hpp"
 #include "nav2_mppi_controller/msg/critic_scores.hpp"
 
 #include "nav2_core/controller.hpp"

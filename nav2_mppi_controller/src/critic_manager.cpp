@@ -85,9 +85,6 @@ void CriticManager::evalTrajectoriesScores(
 xt::xtensor<float, 1> CriticManager::evalTrajectory(
   CriticData & data) const
 {
-  // log the critic_scores shape
-  RCLCPP_INFO(logger_, "(BEFORE FOR)");
-
   xt::xtensor<float, 1> critic_scores = xt::zeros<float>({critics_.size()});
 
   for (size_t q = 0; q < critics_.size(); q++) {
@@ -100,7 +97,7 @@ xt::xtensor<float, 1> CriticManager::evalTrajectory(
     critic_scores(q) = data.costs[0];
   }
   // log the for cycle finished in criticmanager
-  RCLCPP_INFO(logger_, "CriticManager: Critic evaluation (FOR) finished");
+  RCLCPP_DEBUG(logger_, "CriticManager: Critic evaluation (FOR) finished");
 
   return critic_scores;
 }
