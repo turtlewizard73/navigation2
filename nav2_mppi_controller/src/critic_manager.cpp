@@ -96,6 +96,8 @@ xt::xtensor<float, 1> CriticManager::evalTrajectory(
     critics_[q]->score(data);
     critic_scores(q) = data.costs[0];
   }
+  // log the for cycle finished in criticmanager
+  RCLCPP_DEBUG(logger_, "CriticManager: Critic evaluation (FOR) finished");
 
   return critic_scores;
 }
