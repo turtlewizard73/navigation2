@@ -26,6 +26,10 @@ BackUpAction::BackUpAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::BackUp>(xml_tag_name, action_name, conf)
 {
+}
+
+void nav2_behavior_tree::BackUpAction::initialize()
+{
   double dist;
   getInput("backup_dist", dist);
   double speed;
@@ -43,6 +47,10 @@ BackUpAction::BackUpAction(
 
 void BackUpAction::on_tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    initialize();
+  }
+
   increment_recovery_count();
 }
 

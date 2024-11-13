@@ -27,6 +27,10 @@ WaitAction::WaitAction(
   const BT::NodeConfiguration & conf)
 : BtActionNode<nav2_msgs::action::Wait>(xml_tag_name, action_name, conf)
 {
+}
+
+void WaitAction::initialize()
+{
   double duration;
   getInput("wait_duration", duration);
   if (duration <= 0) {
@@ -41,6 +45,10 @@ WaitAction::WaitAction(
 
 void WaitAction::on_tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    initialize();
+  }
+
   increment_recovery_count();
 }
 

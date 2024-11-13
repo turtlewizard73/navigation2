@@ -23,7 +23,9 @@ SpinAction::SpinAction(
   const std::string & xml_tag_name,
   const std::string & action_name,
   const BT::NodeConfiguration & conf)
-: BtActionNode<nav2_msgs::action::Spin>(xml_tag_name, action_name, conf)
+: BtActionNode<nav2_msgs::action::Spin>(xml_tag_name, action_name, conf) {}
+
+void SpinAction::initialize()
 {
   double dist;
   getInput("spin_dist", dist);
@@ -36,6 +38,10 @@ SpinAction::SpinAction(
 
 void SpinAction::on_tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    initialize();
+  }
+
   if (is_recovery_) {
     increment_recovery_count();
   }

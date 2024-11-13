@@ -31,7 +31,15 @@ TransformAvailableCondition::TransformAvailableCondition(
 {
   node_ = config().blackboard->get<rclcpp::Node::SharedPtr>("node");
   tf_ = config().blackboard->get<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer");
+}
 
+TransformAvailableCondition::~TransformAvailableCondition()
+{
+  RCLCPP_DEBUG(node_->get_logger(), "Shutting down TransformAvailableCondition BT node");
+}
+
+void TransformAvailableCondition::initialize()
+{
   getInput("child", child_frame_);
   getInput("parent", parent_frame_);
 
@@ -45,13 +53,12 @@ TransformAvailableCondition::TransformAvailableCondition(
   RCLCPP_DEBUG(node_->get_logger(), "Initialized an TransformAvailableCondition BT node");
 }
 
-TransformAvailableCondition::~TransformAvailableCondition()
-{
-  RCLCPP_DEBUG(node_->get_logger(), "Shutting down TransformAvailableCondition BT node");
-}
-
 BT::NodeStatus TransformAvailableCondition::tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    initialize();
+  }
+
   if (was_found_) {
     return BT::NodeStatus::SUCCESS;
   }

@@ -29,11 +29,19 @@ IsPathValidCondition::IsPathValidCondition(
   client_ = node_->create_client<nav2_msgs::srv::IsPathValid>("is_path_valid");
 
   server_timeout_ = config().blackboard->template get<std::chrono::milliseconds>("server_timeout");
+}
+
+void IsPathValidCondition::initialize()
+{
   getInput<std::chrono::milliseconds>("server_timeout", server_timeout_);
 }
 
 BT::NodeStatus IsPathValidCondition::tick()
 {
+  if (status() == BT::NodeStatus::IDLE) {
+    initialize();
+  }
+
   nav_msgs::msg::Path path;
   getInput("path", path);
 
