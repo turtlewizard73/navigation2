@@ -182,8 +182,20 @@ xt::xtensor<float, 1> Optimizer::getOptimizationResults()
   dummy_data.furthest_reached_path_point.reset();
   dummy_data.path_pts_valid.reset();
 
+  // use evalTrajectoriesScores
+  critic_manager_.evalTrajectoriesScores(dummy_data);
+
+  size_t num_critics = critic_manager_.getCriticNames().size();
+
+  xt::xtensor<float, 1> critic_scores = xt::zeros<float>(std::vector<size_t>{num_critics});
+  for (size_t i = 0; i < num_critics; i++) {
+    critic_scores(i) = dummy_data.costs(0);  // Assuming costs are updated for each critic
+  }
+
+  return critic_scores;
+
   // evaluate the optimized trajectory
-  return critic_manager_.evalTrajectory(dummy_data);
+  // return critic_manager_.evalTrajectory(dummy_data);
 }
 
 std::vector<std::string> Optimizer::getCriticNames() const
