@@ -67,7 +67,7 @@ void MPPIController::cleanup()
 
 void MPPIController::activate()
 {
-  critics_publisher_->on_activate();
+  if (publish_critics_) critics_publisher_->on_activate();
   trajectory_visualizer_.on_activate();
   parameters_handler_->start();
   RCLCPP_INFO(logger_, "Activated MPPI Controller: %s", name_.c_str());

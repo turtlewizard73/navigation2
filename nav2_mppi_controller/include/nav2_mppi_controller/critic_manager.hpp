@@ -69,8 +69,6 @@ public:
     */
   void evalTrajectoriesScores(CriticData & data) const;
 
-  xt::xtensor<float, 1> evalTrajectory(CriticData & data) const;
-
   std::vector<std::string> getCriticNames() const;
 
 protected:
