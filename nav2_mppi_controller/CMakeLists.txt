@@ -45,6 +45,7 @@ endforeach()
 nav2_package()
 
 rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/CriticScore.msg"
   "msg/CriticScores.msg"
   DEPENDENCIES std_msgs
 )
