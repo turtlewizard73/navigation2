@@ -75,7 +75,7 @@ void MPPIController::activate()
 
 void MPPIController::deactivate()
 {
-  critics_publisher_->on_deactivate();
+  if (publish_critics_) critics_publisher_->on_deactivate();
   trajectory_visualizer_.on_deactivate();
   RCLCPP_INFO(logger_, "Deactivated MPPI Controller: %s", name_.c_str());
 }
